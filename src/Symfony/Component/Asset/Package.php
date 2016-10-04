@@ -21,7 +21,7 @@ use Symfony\Component\Asset\VersionStrategy\VersionStrategyInterface;
  * @author Kris Wallsmith <kris@symfony.com>
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class Package implements PackageInterface
+class Package implements VersionizedPackageInterface
 {
     private $versionStrategy;
     private $context;
@@ -43,13 +43,13 @@ class Package implements PackageInterface
     /**
      * {@inheritdoc}
      */
-    public function getUrl($path)
+    public function getUrl($path, $version = null)
     {
         if ($this->isAbsoluteUrl($path)) {
             return $path;
         }
 
-        return $this->versionStrategy->applyVersion($path);
+        return $this->versionStrategy->applyVersion($path, $version);
     }
 
     /**

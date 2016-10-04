@@ -16,7 +16,7 @@ namespace Symfony\Component\Asset\VersionStrategy;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-class StaticVersionStrategy implements VersionStrategyInterface
+class StaticVersionStrategy implements VersionizedVersionStrategyInterface
 {
     private $version;
     private $format;
@@ -42,9 +42,9 @@ class StaticVersionStrategy implements VersionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function applyVersion($path)
+    public function applyVersion($path, $version = null)
     {
-        $versionized = sprintf($this->format, ltrim($path, '/'), $this->getVersion($path));
+        $versionized = sprintf($this->format, ltrim($path, '/'), $version ?: $this->getVersion($path));
 
         if ($path && '/' == $path[0]) {
             return '/'.$versionized;

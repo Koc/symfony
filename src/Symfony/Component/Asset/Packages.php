@@ -106,11 +106,12 @@ class Packages
      *
      * @param string $path        A public path
      * @param string $packageName The name of the asset package to use
+     * @param string $version     The asset version
      *
      * @return string A public path which takes into account the base path and URL path
      */
-    public function getUrl($path, $packageName = null)
+    public function getUrl($path, $packageName = null, $version = null)
     {
-        return $this->getPackage($packageName)->getUrl($path);
+        return $this->getPackage($packageName)->getUrl($path, $version);
     }
 }

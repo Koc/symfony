@@ -50,13 +50,13 @@ class PathPackage extends Package
     /**
      * {@inheritdoc}
      */
-    public function getUrl($path)
+    public function getUrl($path, $version = null)
     {
         if ($this->isAbsoluteUrl($path)) {
             return $path;
         }
 
-        return $this->getBasePath().ltrim($this->getVersionStrategy()->applyVersion($path), '/');
+        return $this->getBasePath().ltrim($this->getVersionStrategy()->applyVersion($path, $version), '/');
     }
 
     /**

@@ -46,12 +46,13 @@ class AssetExtension extends \Twig_Extension
      *
      * @param string $path        A public path
      * @param string $packageName The name of the asset package to use
+     * @param string $version     The asset version
      *
      * @return string The public path of the asset
      */
-    public function getAssetUrl($path, $packageName = null)
+    public function getAssetUrl($path, $packageName = null, $version = null)
     {
-        return $this->packages->getUrl($path, $packageName);
+        return $this->packages->getUrl($path, $packageName, $version);
     }
 
     /**

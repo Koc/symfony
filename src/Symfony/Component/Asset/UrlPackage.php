@@ -69,7 +69,7 @@ class UrlPackage extends Package
     /**
      * {@inheritdoc}
      */
-    public function getUrl($path)
+    public function getUrl($path, $version = null)
     {
         if ($this->isAbsoluteUrl($path)) {
             return $path;
@@ -79,7 +79,7 @@ class UrlPackage extends Package
             return $this->sslPackage->getUrl($path);
         }
 
-        $url = $this->getVersionStrategy()->applyVersion($path);
+        $url = $this->getVersionStrategy()->applyVersion($path, $version);
 
         if ($url && '/' != $url[0]) {
             $url = '/'.$url;
