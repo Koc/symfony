@@ -671,6 +671,17 @@ class UrlGeneratorTest extends TestCase
         $this->assertEquals('/app.php/testing#fragment', $url);
     }
 
+    public function testSchemeCanBeAppliedToUrls()
+    {
+        $routes = $this->getRoutes('test', new Route('/testing'));
+
+        $url = $this->getGenerator($routes)->generate('test', array('_secure' => true), UrlGeneratorInterface::ABSOLUTE_PATH);
+        $this->assertEquals('https://ololo/app.php/testing', $url);
+
+        $url = $this->getGenerator($routes)->generate('test', array('_secure' => false), UrlGeneratorInterface::ABSOLUTE_PATH);
+        $this->assertEquals('/app.php/testing', $url);
+    }
+
     protected function getGenerator(RouteCollection $routes, array $parameters = array(), $logger = null)
     {
         $context = new RequestContext('/app.php');
