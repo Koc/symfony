@@ -22,6 +22,8 @@ use Symfony\Component\PropertyAccess\Exception\InvalidArgumentException;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\Exception\NoSuchIndexException;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
+use Symfony\Component\PropertyAccess\Mapping\Factory\MetadataFactoryInterface;
+use Symfony\Component\PropertyAccess\Mapping\PropertyMetadata;
 
 /**
  * Default implementation of {@link PropertyAccessorInterface}.
@@ -29,6 +31,7 @@ use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
  * @author Bernhard Schussek <bschussek@gmail.com>
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @author Nicolas Grekas <p@tchwork.com>
+ * @author Luis Ramón López <lrlopez@gmail.com>
  */
 class PropertyAccessor implements PropertyAccessorInterface
 {
@@ -118,6 +121,11 @@ class PropertyAccessor implements PropertyAccessorInterface
     const CACHE_PREFIX_PROPERTY_PATH = 'p';
 
     /**
+     * @internal
+     */
+    const CACHE_PREFIX_METADATA = 'm';
+
+    /**
      * @var bool
      */
     private $magicCall;
@@ -128,9 +136,14 @@ class PropertyAccessor implements PropertyAccessorInterface
     private $ignoreInvalidIndices;
 
     /**
-     * @var CacheItemPoolInterface
+     * @var CacheItemPoolInterface|null
      */
     private $cacheItemPool;
+
+    /**
+     * @var MetadataFactoryInterface|null
+     */
+    private $classMetadataFactory;
 
     /**
      * @var array
@@ -154,15 +167,17 @@ class PropertyAccessor implements PropertyAccessorInterface
      * Should not be used by application code. Use
      * {@link PropertyAccess::createPropertyAccessor()} instead.
      *
-     * @param bool                   $magicCall
-     * @param bool                   $throwExceptionOnInvalidIndex
-     * @param CacheItemPoolInterface $cacheItemPool
+     * @param bool                     $magicCall
+     * @param bool                     $throwExceptionOnInvalidIndex
+     * @param CacheItemPoolInterface   $cacheItemPool|null
+     * @param MetadataFactoryInterface $classMetadataFactory|null
      */
-    public function __construct($magicCall = false, $throwExceptionOnInvalidIndex = false, CacheItemPoolInterface $cacheItemPool = null)
+    public function __construct($magicCall = false, $throwExceptionOnInvalidIndex = false, CacheItemPoolInterface $cacheItemPool = null, MetadataFactoryInterface $classMetadataFactory = null)
     {
         $this->magicCall = $magicCall;
         $this->ignoreInvalidIndices = !$throwExceptionOnInvalidIndex;
         $this->cacheItemPool = $cacheItemPool instanceof NullAdapter ? null : $cacheItemPool; // Replace the NullAdapter by the null value
+        $this->classMetadataFactory = $classMetadataFactory;
     }
 
     /**
@@ -536,12 +551,14 @@ class PropertyAccessor implements PropertyAccessorInterface
             }
         }
 
+        $metadata = $this->getPropertyMetadata($class, $property);
+
         $access = array();
 
         $reflClass = new \ReflectionClass($class);
         $access[self::ACCESS_HAS_PROPERTY] = $reflClass->hasProperty($property);
         $camelProp = $this->camelize($property);
-        $getter = 'get'.$camelProp;
+        $getter = ($metadata && $metadata->getGetter()) ? $metadata->getGetter() : 'get'.$camelProp;
         $getsetter = lcfirst($camelProp); // jQuery style, e.g. read: last(), write: last($item)
         $isser = 'is'.$camelProp;
         $hasser = 'has'.$camelProp;
@@ -715,6 +732,8 @@ class PropertyAccessor implements PropertyAccessorInterface
             }
         }
 
+        $metadata = $this->getPropertyMetadata($class, $property);
+
         $access = array();
 
         $reflClass = new \ReflectionClass($class);
@@ -723,7 +742,7 @@ class PropertyAccessor implements PropertyAccessorInterface
         $singulars = (array) Inflector::singularize($camelized);
 
         if (is_array($value) || $value instanceof \Traversable) {
-            $methods = $this->findAdderAndRemover($reflClass, $singulars);
+            $methods = $this->findAdderAndRemover($reflClass, $singulars, $metadata);
 
             if (null !== $methods) {
                 $access[self::ACCESS_TYPE] = self::ACCESS_TYPE_ADDER_AND_REMOVER;
@@ -733,7 +752,8 @@ class PropertyAccessor implements PropertyAccessorInterface
         }
 
         if (!isset($access[self::ACCESS_TYPE])) {
-            $setter = 'set'.$camelized;
+            $setter = ($metadata && $metadata->getSetter()) ? $metadata->getSetter() : 'set'.$camelized;
+
             $getsetter = lcfirst($camelized); // jQuery style, e.g. read: last(), write: last($item)
 
             if ($this->isMethodAccessible($reflClass, $setter, 1)) {
@@ -752,7 +772,7 @@ class PropertyAccessor implements PropertyAccessorInterface
                 // we call the getter and hope the __call do the job
                 $access[self::ACCESS_TYPE] = self::ACCESS_TYPE_MAGIC;
                 $access[self::ACCESS_NAME] = $setter;
-            } elseif (null !== $methods = $this->findAdderAndRemover($reflClass, $singulars)) {
+            } elseif (null !== $methods = $this->findAdderAndRemover($reflClass, $singulars, $metadata)) {
                 $access[self::ACCESS_TYPE] = self::ACCESS_TYPE_NOT_FOUND;
                 $access[self::ACCESS_NAME] = sprintf(
                     'The property "%s" in class "%s" can be defined with the methods "%s()" but '.
@@ -829,11 +849,17 @@ class PropertyAccessor implements PropertyAccessorInterface
      *
      * @return array|null An array containing the adder and remover when found, null otherwise
      */
-    private function findAdderAndRemover(\ReflectionClass $reflClass, array $singulars)
+    private function findAdderAndRemover(\ReflectionClass $reflClass, array $singulars, PropertyMetadata $metadata = null)
     {
+        $fixedAdder = ($metadata && $metadata->getAdder()) ? $metadata->getAdder() : null;
+        $fixedRemover = ($metadata && $metadata->getRemover()) ? $metadata->getRemover() : null;
+        if ($fixedAdder && $fixedRemover) {
+            return array($fixedAdder, $fixedRemover);
+        }
+
         foreach ($singulars as $singular) {
-            $addMethod = 'add'.$singular;
-            $removeMethod = 'remove'.$singular;
+            $addMethod = $fixedAdder ?: 'add'.$singular;
+            $removeMethod = $fixedRemover ?: 'remove'.$singular;
 
             $addMethodFound = $this->isMethodAccessible($reflClass, $addMethod, 1);
             $removeMethodFound = $this->isMethodAccessible($reflClass, $removeMethod, 1);
@@ -842,6 +868,8 @@ class PropertyAccessor implements PropertyAccessorInterface
                 return array($addMethod, $removeMethod);
             }
         }
+
+        return null;
     }
 
     /**
@@ -930,5 +958,31 @@ class PropertyAccessor implements PropertyAccessorInterface
         }
 
         return $apcu;
+    }
+
+    /**
+     * Returns metadata associated with the property if it exists.
+     *
+     * @param $class
+     * @param $property
+     *
+     * @return null|PropertyMetadata
+     */
+    private function getPropertyMetadata($class, $property)
+    {
+        if ($this->cacheItemPool) {
+            $key = $class.'.'.$property;
+            $item = $this->cacheItemPool->getItem(self::CACHE_PREFIX_METADATA.str_replace('\\', '.', $key));
+            if ($item->isHit()) {
+                return $item->get();
+            }
+        }
+
+        $metadata = null;
+        if ($this->classMetadataFactory && $classMetadata = $this->classMetadataFactory->getMetadataFor($class)) {
+            $metadata = $classMetadata->getMetadataForProperty($property);
+        }
+
+        return $metadata;
     }
 }
