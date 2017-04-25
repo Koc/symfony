@@ -11,21 +11,13 @@
 
 namespace Symfony\Component\Serializer\Mapping\Loader;
 
-use Symfony\Component\Serializer\Mapping\ClassMetadataInterface;
+use Symfony\Component\Metadata\Loader\LoaderInterface as BaseLoaderInterface;
 
 /**
  * Loads {@link ClassMetadataInterface}.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-interface LoaderInterface
+interface LoaderInterface extends BaseLoaderInterface
 {
-    /**
-     * Load class metadata.
-     *
-     * @param ClassMetadataInterface $classMetadata A metadata
-     *
-     * @return bool
-     */
-    public function loadClassMetadata(ClassMetadataInterface $classMetadata);
 }

@@ -12,13 +12,13 @@
 namespace Symfony\Component\PropertyAccess\Mapping\Loader;
 
 use Doctrine\Common\Annotations\Reader;
+use Symfony\Component\Metadata\ClassMetadataInterface;
 use Symfony\Component\PropertyAccess\Annotation\AdderAccessor;
 use Symfony\Component\PropertyAccess\Annotation\GetterAccessor;
 use Symfony\Component\PropertyAccess\Annotation\PropertyAccessor;
 use Symfony\Component\PropertyAccess\Annotation\RemoverAccessor;
 use Symfony\Component\PropertyAccess\Annotation\SetterAccessor;
 use Symfony\Component\PropertyAccess\Mapping\PropertyMetadata;
-use Symfony\Component\PropertyAccess\Mapping\ClassMetadata;
 
 /**
  * Annotation loader.
@@ -26,7 +26,7 @@ use Symfony\Component\PropertyAccess\Mapping\ClassMetadata;
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @author Luis Ramón López <lrlopez@gmail.com>
  */
-class AnnotationLoader implements LoaderInterface
+class AnnotationLoader implements \Symfony\Component\Metadata\Loader\LoaderInterface
 {
     private $reader;
 
@@ -38,7 +38,7 @@ class AnnotationLoader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadClassMetadata(ClassMetadata $classMetadata)
+    public function loadClassMetadata(ClassMetadataInterface $classMetadata)
     {
         $reflectionClass = $classMetadata->getReflectionClass();
         $className = $reflectionClass->name;

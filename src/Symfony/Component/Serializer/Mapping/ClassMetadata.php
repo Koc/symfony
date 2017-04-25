@@ -11,22 +11,15 @@
 
 namespace Symfony\Component\Serializer\Mapping;
 
+use Symfony\Component\Metadata\GenericClassMetadata;
+
 /**
  * {@inheritdoc}
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class ClassMetadata implements ClassMetadataInterface
+class ClassMetadata extends GenericClassMetadata
 {
-    /**
-     * @var string
-     *
-     * @internal This property is public in order to reduce the size of the
-     *           class' serialized representation. Do not access it. Use
-     *           {@link getName()} instead.
-     */
-    public $name;
-
     /**
      * @var AttributeMetadataInterface[]
      *
@@ -35,29 +28,6 @@ class ClassMetadata implements ClassMetadataInterface
      *           {@link getAttributesMetadata()} instead.
      */
     public $attributesMetadata = array();
-
-    /**
-     * @var \ReflectionClass
-     */
-    private $reflClass;
-
-    /**
-     * Constructs a metadata for the given class.
-     *
-     * @param string $class
-     */
-    public function __construct($class)
-    {
-        $this->name = $class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
 
     /**
      * {@inheritdoc}
@@ -78,7 +48,7 @@ class ClassMetadata implements ClassMetadataInterface
     /**
      * {@inheritdoc}
      */
-    public function merge(ClassMetadataInterface $classMetadata)
+    public function merge(\Symfony\Component\Metadata\ClassMetadataInterface $classMetadata)
     {
         foreach ($classMetadata->getAttributesMetadata() as $attributeMetadata) {
             if (isset($this->attributesMetadata[$attributeMetadata->getName()])) {
@@ -92,25 +62,11 @@ class ClassMetadata implements ClassMetadataInterface
     /**
      * {@inheritdoc}
      */
-    public function getReflectionClass()
-    {
-        if (!$this->reflClass) {
-            $this->reflClass = new \ReflectionClass($this->getName());
-        }
-
-        return $this->reflClass;
-    }
-
-    /**
-     * Returns the names of the properties that should be serialized.
-     *
-     * @return string[]
-     */
     public function __sleep()
     {
-        return array(
-            'name',
-            'attributesMetadata',
+        return array_merge(
+            parent::__sleep(),
+            array('attributesMetadata')
         );
     }
 }

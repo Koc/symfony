@@ -12,11 +12,11 @@
 namespace Symfony\Component\Serializer\Mapping\Loader;
 
 use Doctrine\Common\Annotations\Reader;
+use Symfony\Component\Metadata\ClassMetadataInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Serializer\Exception\MappingException;
 use Symfony\Component\Serializer\Mapping\AttributeMetadata;
-use Symfony\Component\Serializer\Mapping\ClassMetadataInterface;
 
 /**
  * Annotation loader.

@@ -1,26 +1,14 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+namespace Symfony\Component\Metadata\Factory;
 
-namespace Symfony\Component\Serializer\Mapping\Factory;
-
-use Symfony\Component\Metadata\Factory\MetadataFactoryInterface;
-use Symfony\Component\Serializer\Exception\InvalidArgumentException;
-use Symfony\Component\Serializer\Mapping\ClassMetadataInterface;
+use Symfony\Component\Metadata\ClassMetadataInterface;
+use Symfony\Component\Metadata\Exception\InvalidArgumentException;
 
 /**
- * Returns a {@see ClassMetadataInterface}.
- *
- * @author Kévin Dunglas <dunglas@gmail.com>
+ * @author Luis Ramón López <lrlopez@gmail.com>
  */
-interface ClassMetadataFactoryInterface extends MetadataFactoryInterface
+interface MetadataFactoryInterface
 {
     /**
      * If the method was called with the same class name (or an object of that
@@ -39,16 +27,16 @@ interface ClassMetadataFactoryInterface extends MetadataFactoryInterface
      *
      * @return ClassMetadataInterface
      *
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentException If no metadata exists for the given value
      */
     public function getMetadataFor($value);
 
     /**
-     * Checks if class has metadata.
+     * Returns whether the class is able to return metadata for the given value.
      *
-     * @param mixed $value
+     * @param mixed $value Some value
      *
-     * @return bool
+     * @return bool Whether metadata can be returned for that value
      */
     public function hasMetadataFor($value);
 }
