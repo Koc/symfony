@@ -6,7 +6,7 @@ use Symfony\Component\Metadata\ClassMetadataInterface;
 use Symfony\Component\Metadata\Exception\InvalidArgumentException;
 
 /**
- * @author Luis Ramón López <lrlopez@gmail.com>
+ * @author Kévin Dunglas <dunglas@gmail.com>
  */
 interface MetadataFactoryInterface
 {
