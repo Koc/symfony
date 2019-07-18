@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Mailer\Bridge\Amazon\Tests\Transport;
 
-use Symfony\Component\Mailer\Bridge\Amazon;
 use Symfony\Component\Mailer\Bridge\Amazon\Transport\SesApiTransport;
 use Symfony\Component\Mailer\Bridge\Amazon\Transport\SesHttpTransport;
 use Symfony\Component\Mailer\Bridge\Amazon\Transport\SesSmtpTransport;

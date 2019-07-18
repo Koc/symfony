@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Mailer\Bridge\Amazon\Transport;
 
-use Symfony\Component\Mailer\Bridge\Amazon;
 use Symfony\Component\Mailer\Exception\UnsupportedSchemeException;
 use Symfony\Component\Mailer\Transport\AbstractTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
