@@ -12,7 +12,7 @@
 namespace Symfony\Component\Mailer;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Mailer\Bridge\Amazon\Factory\SesTransportFactory;
+use Symfony\Component\Mailer\Bridge\Amazon\Transport\SesTransportFactory;
 use Symfony\Component\Mailer\Bridge\Google\Factory\GmailTransportFactory;
 use Symfony\Component\Mailer\Bridge\Mailchimp\Factory\MandrillTransportFactory;
 use Symfony\Component\Mailer\Bridge\Mailgun\Factory\MailgunTransportFactory;

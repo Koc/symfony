@@ -37,7 +37,7 @@ class UnsupportedHostException extends LogicException
             'package' => 'symfony/sendgrid-mailer',
         ],
         'ses' => [
-            'class' => Bridge\Amazon\Factory\SesTransportFactory::class,
+            'class' => Bridge\Amazon\Transport\SesTransportFactory::class,
             'package' => 'symfony/amazon-mailer',
         ],
         'mandrill' => [
