@@ -1,9 +1,9 @@
 <?php
 
-namespace Symfony\Component\Mailer\Bridge\Google\Tests\Factory;
+namespace Symfony\Component\Mailer\Bridge\Google\Tests\Transport;
 
-use Symfony\Component\Mailer\Bridge\Google\Factory\GmailTransportFactory;
-use Symfony\Component\Mailer\Bridge\Google\Smtp\GmailTransport;
+use Symfony\Component\Mailer\Bridge\Google\Transport\GmailTransport;
+use Symfony\Component\Mailer\Bridge\Google\Transport\GmailTransportFactory;
 use Symfony\Component\Mailer\Tests\TransportFactoryTestCase;
 use Symfony\Component\Mailer\Transport\Dsn;
 use Symfony\Component\Mailer\Transport\TransportFactoryInterface;

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Mailer\Bridge\Mailchimp\Smtp;
+namespace Symfony\Component\Mailer\Bridge\Google\Transport;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
@@ -18,11 +18,11 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Kevin Verschaeve
  */
-class MandrillTransport extends EsmtpTransport
+class GmailTransport extends EsmtpTransport
 {
     public function __construct(string $username, string $password, EventDispatcherInterface $dispatcher = null, LoggerInterface $logger = null)
     {
-        parent::__construct('smtp.mandrillapp.com', 587, 'tls', null, $dispatcher, $logger);
+        parent::__construct('smtp.gmail.com', 465, 'ssl', null, $dispatcher, $logger);
 
         $this->setUsername($username);
         $this->setPassword($password);

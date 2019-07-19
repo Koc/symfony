@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Mailer\Bridge\Google\Factory;
+namespace Symfony\Component\Mailer\Bridge\Google\Transport;
 
-use Symfony\Component\Mailer\Bridge\Google\Smtp\GmailTransport;
 use Symfony\Component\Mailer\Exception\UnsupportedSchemeException;
 use Symfony\Component\Mailer\Transport\AbstractTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;

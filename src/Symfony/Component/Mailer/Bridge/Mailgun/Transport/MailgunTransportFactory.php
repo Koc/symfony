@@ -9,9 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Mailer\Bridge\Postmark\Factory;
+namespace Symfony\Component\Mailer\Bridge\Mailgun\Transport;
 
-use Symfony\Component\Mailer\Bridge\Postmark;
 use Symfony\Component\Mailer\Exception\UnsupportedSchemeException;
 use Symfony\Component\Mailer\Transport\AbstractTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
@@ -20,26 +19,32 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 /**
  * @author Konstantin Myakshin <molodchick@gmail.com>
  */
-final class PostmarkTransportFactory extends AbstractTransportFactory
+final class MailgunTransportFactory extends AbstractTransportFactory
 {
     public function create(Dsn $dsn): TransportInterface
     {
         $scheme = $dsn->getScheme();
         $user = $this->getUser($dsn);
+        $password = $this->getPassword($dsn);
+        $region = $dsn->getOption('region');
 
         if ('api' === $scheme) {
-            return new Postmark\Http\Api\PostmarkTransport($user, $this->client, $this->dispatcher, $this->logger);
+            return new MailgunApiTransport($user, $password, $region, $this->client, $this->dispatcher, $this->logger);
+        }
+
+        if ('http' === $scheme) {
+            return new MailgunHttpTransport($user, $password, $region, $this->client, $this->dispatcher, $this->logger);
         }
 
         if ('smtp' === $scheme) {
-            return new Postmark\Smtp\PostmarkTransport($user, $this->dispatcher, $this->logger);
+            return new MailgunSmtpTransport($user, $password, $region, $this->dispatcher, $this->logger);
         }
 
-        throw new UnsupportedSchemeException($dsn, ['api', 'smtp']);
+        throw new UnsupportedSchemeException($dsn, ['api', 'http', 'smtp']);
     }
 
     public function supports(Dsn $dsn): bool
     {
-        return 'postmark' === $dsn->getHost();
+        return 'mailgun' === $dsn->getHost();
     }
 }

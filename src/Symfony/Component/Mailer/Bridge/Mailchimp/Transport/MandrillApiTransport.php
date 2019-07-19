@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Mailer\Bridge\Mailchimp\Http\Api;
+namespace Symfony\Component\Mailer\Bridge\Mailchimp\Transport;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\HttpTransportException;
@@ -23,7 +23,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 /**
  * @author Kevin Verschaeve
  */
-class MandrillTransport extends AbstractApiTransport
+class MandrillApiTransport extends AbstractApiTransport
 {
     private const ENDPOINT = 'https://mandrillapp.com/api/1.0/messages/send.json';
 

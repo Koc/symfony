@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Mailer\Bridge\Google\Smtp;
+namespace Symfony\Component\Mailer\Bridge\Postmark\Smtp;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
@@ -18,13 +18,13 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Kevin Verschaeve
  */
-class GmailTransport extends EsmtpTransport
+class PostmarkSmtpTransport extends EsmtpTransport
 {
-    public function __construct(string $username, string $password, EventDispatcherInterface $dispatcher = null, LoggerInterface $logger = null)
+    public function __construct(string $id, EventDispatcherInterface $dispatcher = null, LoggerInterface $logger = null)
     {
-        parent::__construct('smtp.gmail.com', 465, 'ssl', null, $dispatcher, $logger);
+        parent::__construct('smtp.postmarkapp.com', 587, 'tls', null, $dispatcher, $logger);
 
-        $this->setUsername($username);
-        $this->setPassword($password);
+        $this->setUsername($id);
+        $this->setPassword($id);
     }
 }

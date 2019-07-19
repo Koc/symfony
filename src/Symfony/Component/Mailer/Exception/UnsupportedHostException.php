@@ -21,15 +21,15 @@ class UnsupportedHostException extends LogicException
 {
     private const HOST_TO_PACKAGE_MAP = [
         'gmail' => [
-            'class' => Bridge\Google\Factory\GmailTransportFactory::class,
+            'class' => Bridge\Google\Transport\GmailTransportFactory::class,
             'package' => 'symfony/google-mailer',
         ],
         'mailgun' => [
-            'class' => Bridge\Mailgun\Factory\MailgunTransportFactory::class,
+            'class' => Bridge\Mailgun\Transport\MailgunTransportFactory::class,
             'package' => 'symfony/mailgun-mailer',
         ],
         'postmark' => [
-            'class' => Bridge\Postmark\Factory\PostmarkTransportFactory::class,
+            'class' => Bridge\Postmark\Transport\PostmarkTransportFactory::class,
             'package' => 'symfony/postmark-mailer',
         ],
         'sendgrid' => [
@@ -41,7 +41,7 @@ class UnsupportedHostException extends LogicException
             'package' => 'symfony/amazon-mailer',
         ],
         'mandrill' => [
-            'class' => Bridge\Mailchimp\Factory\MandrillTransportFactory::class,
+            'class' => Bridge\Mailchimp\Transport\MandrillTransportFactory::class,
             'package' => 'symfony/mailchimp-mailer',
         ],
     ];

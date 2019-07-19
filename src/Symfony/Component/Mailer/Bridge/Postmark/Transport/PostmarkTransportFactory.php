@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Mailer\Bridge\Mailchimp\Factory;
+namespace Symfony\Component\Mailer\Bridge\Postmark\Transport;
 
-use Symfony\Component\Mailer\Bridge\Mailchimp;
+use Symfony\Component\Mailer\Bridge\Postmark\Smtp\PostmarkSmtpTransport;
 use Symfony\Component\Mailer\Exception\UnsupportedSchemeException;
 use Symfony\Component\Mailer\Transport\AbstractTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
@@ -20,7 +20,7 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 /**
  * @author Konstantin Myakshin <molodchick@gmail.com>
  */
-final class MandrillTransportFactory extends AbstractTransportFactory
+final class PostmarkTransportFactory extends AbstractTransportFactory
 {
     public function create(Dsn $dsn): TransportInterface
     {
@@ -28,24 +28,18 @@ final class MandrillTransportFactory extends AbstractTransportFactory
         $user = $this->getUser($dsn);
 
         if ('api' === $scheme) {
-            return new Mailchimp\Http\Api\MandrillTransport($user, $this->client, $this->dispatcher, $this->logger);
-        }
-
-        if ('http' === $scheme) {
-            return new Mailchimp\Http\MandrillTransport($user, $this->client, $this->dispatcher, $this->logger);
+            return new PostmarkApiTransport($user, $this->client, $this->dispatcher, $this->logger);
         }
 
         if ('smtp' === $scheme) {
-            $password = $this->getPassword($dsn);
-
-            return new Mailchimp\Smtp\MandrillTransport($user, $password, $this->dispatcher, $this->logger);
+            return new PostmarkSmtpTransport($user, $this->dispatcher, $this->logger);
         }
 
-        throw new UnsupportedSchemeException($dsn, ['api', 'http', 'smtp']);
+        throw new UnsupportedSchemeException($dsn, ['api', 'smtp']);
     }
 
     public function supports(Dsn $dsn): bool
     {
-        return 'mandrill' === $dsn->getHost();
+        return 'postmark' === $dsn->getHost();
     }
 }

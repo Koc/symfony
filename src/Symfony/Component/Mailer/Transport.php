@@ -13,10 +13,10 @@ namespace Symfony\Component\Mailer;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Bridge\Amazon\Transport\SesTransportFactory;
-use Symfony\Component\Mailer\Bridge\Google\Factory\GmailTransportFactory;
-use Symfony\Component\Mailer\Bridge\Mailchimp\Factory\MandrillTransportFactory;
-use Symfony\Component\Mailer\Bridge\Mailgun\Factory\MailgunTransportFactory;
-use Symfony\Component\Mailer\Bridge\Postmark\Factory\PostmarkTransportFactory;
+use Symfony\Component\Mailer\Bridge\Google\Transport\GmailTransportFactory;
+use Symfony\Component\Mailer\Bridge\Mailchimp\Transport\MandrillTransportFactory;
+use Symfony\Component\Mailer\Bridge\Mailgun\Transport\MailgunTransportFactory;
+use Symfony\Component\Mailer\Bridge\Postmark\Transport\PostmarkTransportFactory;
 use Symfony\Component\Mailer\Bridge\Sendgrid\Factory\SendgridTransportFactory;
 use Symfony\Component\Mailer\Exception\UnsupportedHostException;
 use Symfony\Component\Mailer\Transport\Dsn;

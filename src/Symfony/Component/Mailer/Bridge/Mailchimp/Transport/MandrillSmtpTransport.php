@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Mailer\Bridge\Postmark\Smtp;
+namespace Symfony\Component\Mailer\Bridge\Mailchimp\Transport;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
@@ -18,13 +18,13 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 /**
  * @author Kevin Verschaeve
  */
-class PostmarkTransport extends EsmtpTransport
+class MandrillSmtpTransport extends EsmtpTransport
 {
-    public function __construct(string $id, EventDispatcherInterface $dispatcher = null, LoggerInterface $logger = null)
+    public function __construct(string $username, string $password, EventDispatcherInterface $dispatcher = null, LoggerInterface $logger = null)
     {
-        parent::__construct('smtp.postmarkapp.com', 587, 'tls', null, $dispatcher, $logger);
+        parent::__construct('smtp.mandrillapp.com', 587, 'tls', null, $dispatcher, $logger);
 
-        $this->setUsername($id);
-        $this->setPassword($id);
+        $this->setUsername($username);
+        $this->setPassword($password);
     }
 }
