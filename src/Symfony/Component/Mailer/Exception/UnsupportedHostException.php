@@ -33,7 +33,7 @@ class UnsupportedHostException extends LogicException
             'package' => 'symfony/postmark-mailer',
         ],
         'sendgrid' => [
-            'class' => Bridge\Sendgrid\Factory\SendgridTransportFactory::class,
+            'class' => Bridge\Sendgrid\Transport\SendgridTransportFactory::class,
             'package' => 'symfony/sendgrid-mailer',
         ],
         'ses' => [
