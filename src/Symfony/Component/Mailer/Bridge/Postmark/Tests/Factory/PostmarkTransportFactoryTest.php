@@ -14,7 +14,7 @@ namespace Symfony\Component\Mailer\Bridge\Postmark\Tests\Factory;
 use Symfony\Component\Mailer\Bridge\Postmark\Smtp\PostmarkSmtpTransport;
 use Symfony\Component\Mailer\Bridge\Postmark\Transport\PostmarkApiTransport;
 use Symfony\Component\Mailer\Bridge\Postmark\Transport\PostmarkTransportFactory;
-use Symfony\Component\Mailer\Tests\TransportFactoryTestCase;
+use Symfony\Component\Mailer\Test\TransportFactoryTestCase;
 use Symfony\Component\Mailer\Transport\Dsn;
 use Symfony\Component\Mailer\Transport\TransportFactoryInterface;
 
