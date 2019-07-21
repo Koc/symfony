@@ -37,6 +37,11 @@ final class Headers
         }
     }
 
+    public static function create(HeaderInterface ...$headers): self
+    {
+        return new self($headers);
+    }
+
     public function __clone()
     {
         foreach ($this->headers as $name => $collection) {

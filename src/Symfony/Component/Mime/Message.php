@@ -30,6 +30,11 @@ class Message extends RawMessage
         $this->body = $body;
     }
 
+    public static function create(Headers $headers = null, AbstractPart $body = null)
+    {
+        return new static($headers, $body);
+    }
+
     public function __clone()
     {
         if (null !== $this->headers) {

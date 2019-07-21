@@ -21,7 +21,7 @@ class MessageConverterTest extends TestCase
     public function testToEmail()
     {
         $file = file_get_contents(__DIR__.'/Fixtures/mimetypes/test.gif');
-        $email = (new Email())->from('fabien@symfony.com');
+        $email = Email::create()->from('fabien@symfony.com');
         $this->assertSame($email, MessageConverter::toEmail($email));
 
         $this->assertConversion((clone $email)->text('text content'));

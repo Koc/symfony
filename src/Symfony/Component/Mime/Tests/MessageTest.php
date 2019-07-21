@@ -88,7 +88,7 @@ class MessageTest extends TestCase
     public function testGetPreparedHeadersWithNoFrom()
     {
         $this->expectException(\LogicException::class);
-        (new Message())->getPreparedHeaders();
+        Message::create()->getPreparedHeaders();
     }
 
     public function testGetPreparedHeadersWithNamedFrom()

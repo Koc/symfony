@@ -25,12 +25,11 @@ class SMimeSignerTest extends SMimeTestCase
 {
     public function testSignedMessage()
     {
-        $message = new Message(
-            (new Headers())
-                ->addDateHeader('Date', new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
-                ->addMailboxListHeader('From', ['fabien@symfony.com']),
-            new TextPart('content')
-        );
+        $headers = Headers::create()
+            ->addDateHeader('Date', new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
+            ->addMailboxListHeader('From', ['fabien@symfony.com']);
+
+        $message = new Message($headers, new TextPart('content'));
 
         $signer = new SMimeSigner($this->samplesDir.'sign.crt', $this->samplesDir.'sign.key');
         $signedMessage = $signer->sign($message);
@@ -40,7 +39,7 @@ class SMimeSignerTest extends SMimeTestCase
 
     public function testSignEncryptedMessage()
     {
-        $message = (new Email())
+        $message = Email::create()
             ->date(new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
             ->to('fabien@symfony.com')
             ->subject('Testing')
@@ -60,12 +59,11 @@ class SMimeSignerTest extends SMimeTestCase
 
     public function testSignedMessageWithPassphrase()
     {
-        $message = new Message(
-            (new Headers())
-                ->addDateHeader('Date', new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
-                ->addMailboxListHeader('From', ['fabien@symfony.com']),
-            new TextPart('content')
-        );
+        $headers = Headers::create()
+            ->addDateHeader('Date', new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
+            ->addMailboxListHeader('From', ['fabien@symfony.com']);
+
+        $message = new Message($headers, new TextPart('content'));
 
         $signer = new SMimeSigner($this->samplesDir.'sign3.crt', $this->samplesDir.'sign3.key', 'symfony-rocks');
         $signedMessage = $signer->sign($message);
@@ -75,7 +73,7 @@ class SMimeSignerTest extends SMimeTestCase
 
     public function testProperSerialiable()
     {
-        $message = (new Email())
+        $message = Email::create()
             ->date(new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
             ->to('fabien@symfony.com')
             ->subject('Testing')
@@ -97,7 +95,7 @@ class SMimeSignerTest extends SMimeTestCase
 
     public function testSignedMessageWithBcc()
     {
-        $message = (new Email())
+        $message = Email::create()
             ->date(new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
             ->addBcc('fabien@symfony.com', 's.stok@rollerscapes.net')
             ->subject('I am your sign of fear')
@@ -112,14 +110,15 @@ class SMimeSignerTest extends SMimeTestCase
 
     public function testSignedMessageWithAttachments()
     {
-        $message = new Email((new Headers())
+        $headers = Headers::create()
             ->addDateHeader('Date', new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
-            ->addMailboxListHeader('From', ['fabien@symfony.com'])
-        );
-        $message->html($content = 'html content <img src="cid:test.gif">');
-        $message->text('text content');
-        $message->attach(fopen(__DIR__.'/../Fixtures/mimetypes/test', 'r'));
-        $message->attach(fopen(__DIR__.'/../Fixtures/mimetypes/test.gif', 'r'), 'test.gif');
+            ->addMailboxListHeader('From', ['fabien@symfony.com']);
+
+        $message = Email::create($headers)
+            ->html($content = 'html content <img src="cid:test.gif">')
+            ->text('text content')
+            ->attach(fopen(__DIR__.'/../Fixtures/mimetypes/test', 'r'))
+            ->attach(fopen(__DIR__.'/../Fixtures/mimetypes/test.gif', 'r'), 'test.gif');
 
         $signer = new SMimeSigner($this->samplesDir.'sign.crt', $this->samplesDir.'sign.key');
 
@@ -129,12 +128,11 @@ class SMimeSignerTest extends SMimeTestCase
 
     public function testSignedMessageExtraCerts()
     {
-        $message = new Message(
-            (new Headers())
-                ->addDateHeader('Date', new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
-                ->addMailboxListHeader('From', ['fabien@symfony.com']),
-            new TextPart('content')
-        );
+        $headers = Headers::create()
+            ->addDateHeader('Date', new \DateTime('2019-04-07 10:36:30', new \DateTimeZone('Europe/Paris')))
+            ->addMailboxListHeader('From', ['fabien@symfony.com']);
+
+        $message = new Message($headers, new TextPart('content'));
 
         $signer = new SMimeSigner(
             $this->samplesDir.'sign.crt',
