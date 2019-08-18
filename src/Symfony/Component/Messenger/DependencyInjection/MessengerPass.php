@@ -170,7 +170,8 @@ class MessengerPass implements CompilerPassInterface
             foreach ($handlersByMessage as $message => $handlers) {
                 $handlerDescriptors = [];
                 foreach ($handlers as $handler) {
-                    $definitions[$definitionId = '.messenger.handler_descriptor.'.ContainerBuilder::hash($bus.':'.$message.':'.$handler[0])] = (new Definition(HandlerDescriptor::class))->setArguments([new Reference($handler[0]), $handler[1]]);
+                    $hashParts = [$bus, $handler[1]['from_transport'] ?? null, $message, $handler[0]];
+                    $definitions[$definitionId = '.messenger.handler_descriptor.'.ContainerBuilder::hash(implode(':', $hashParts))] = (new Definition(HandlerDescriptor::class))->setArguments([new Reference($handler[0]), $handler[1]]);
                     $handlerDescriptors[] = new Reference($definitionId);
                 }
 
