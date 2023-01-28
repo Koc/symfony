@@ -16,6 +16,8 @@ use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\DateTimeValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver\MapQueryStringValueResolver;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver\MapRequestContentValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\RequestAttributeValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\RequestValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver;
@@ -57,6 +59,20 @@ return static function (ContainerConfigurator $container) {
         ->set('argument_resolver.datetime', DateTimeValueResolver::class)
             ->args([
                 service('clock')->nullOnInvalid(),
+            ])
+            ->tag('controller.argument_value_resolver', ['priority' => 100])
+
+        ->set('argument_resolver.query_string', MapQueryStringValueResolver::class)
+            ->args([
+                service('serializer'),
+                service('validator')->nullOnInvalid(),
+            ])
+            ->tag('controller.argument_value_resolver', ['priority' => 100])
+
+        ->set('argument_resolver.request_content', MapRequestContentValueResolver::class)
+            ->args([
+                service('serializer'),
+                service('validator')->nullOnInvalid(),
             ])
             ->tag('controller.argument_value_resolver', ['priority' => 100])
 

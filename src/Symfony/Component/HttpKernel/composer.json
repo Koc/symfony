@@ -37,9 +37,11 @@
         "symfony/http-client-contracts": "^2.5|^3",
         "symfony/process": "^5.4|^6.0",
         "symfony/routing": "^5.4|^6.0",
+        "symfony/serializer": "^6.0",
         "symfony/stopwatch": "^5.4|^6.0",
         "symfony/translation": "^5.4|^6.0",
         "symfony/translation-contracts": "^2.5|^3",
+        "symfony/validator": "^6.0",
         "symfony/uid": "^5.4|^6.0",
         "psr/cache": "^1.0|^2.0|^3.0",
         "twig/twig": "^2.13|^3.0.4"

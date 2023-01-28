@@ -425,6 +425,9 @@ class FrameworkExtension extends Extension
             }
 
             $this->registerSerializerConfiguration($config['serializer'], $container, $loader);
+        } else {
+            $container->removeDefinition('argument_resolver.query_string');
+            $container->removeDefinition('argument_resolver.request_content');
         }
 
         if ($propertyInfoEnabled) {
