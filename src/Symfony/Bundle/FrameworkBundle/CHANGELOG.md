@@ -13,6 +13,7 @@ CHANGELOG
  * Deprecate the `notifier.logger_notification_listener` service, use the `notifier.notification_logger_listener` service instead
  * Allow setting private services with the test container
  * Register alias for argument for workflow services with workflow name only
+ * Add `handle_partial_denormalization_exception` and `handle_validation_failed_exception` configuration nodes
 
 6.2
 ---

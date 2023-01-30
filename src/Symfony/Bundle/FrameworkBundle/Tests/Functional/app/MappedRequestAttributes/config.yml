@@ -6,3 +6,5 @@ framework:
         enabled: true
     validation: true
     property_info: { enabled: true }
+    handle_partial_denormalization_exception: true
+    handle_validation_failed_exception: true

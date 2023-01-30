@@ -466,6 +466,8 @@ class ConfigurationTest extends TestCase
             'enabled_locales' => [],
             'set_locale_from_accept_language' => false,
             'set_content_language_from_locale' => false,
+            'handle_partial_denormalization_exception' => false,
+            'handle_validation_failed_exception' => false,
             'secret' => 's3cr3t',
             'trusted_hosts' => [],
             'trusted_headers' => [

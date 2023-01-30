@@ -23,6 +23,11 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  */
 final class ValidationFailedExceptionListener implements EventSubscriberInterface
 {
+    private const SUPPORTED_FORMATS = [
+        'xml',
+        'json',
+    ];
+
     public function __construct(private readonly SerializerInterface $serializer)
     {
     }
@@ -30,14 +35,17 @@ final class ValidationFailedExceptionListener implements EventSubscriberInterfac
     public function onKernelException(ExceptionEvent $event): void
     {
         $throwable = $event->getThrowable();
-
         if (!$throwable instanceof ValidationFailedException) {
             return;
         }
 
-        $data = $this->serializer->serialize($throwable->getViolations(), 'json');
-        $response = JsonResponse::fromJsonString($data, JsonResponse::HTTP_BAD_REQUEST);
+        $format = $event->getRequest()->getPreferredFormat('json');
+        if (!in_array($format, self::SUPPORTED_FORMATS, true)) {
+            return;
+        }
 
+        $data = $this->serializer->serialize($throwable->getViolations(), $format);
+        $response = JsonResponse::fromJsonString($data, JsonResponse::HTTP_BAD_REQUEST);
         $event->setResponse($response);
     }
 

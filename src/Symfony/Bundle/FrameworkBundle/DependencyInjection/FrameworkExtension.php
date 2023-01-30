@@ -431,6 +431,14 @@ class FrameworkExtension extends Extension
             $container->removeDefinition('validation_failed_exception_listener');
         }
 
+        if (!$config['handle_partial_denormalization_exception']) {
+            $container->removeDefinition('partial_denormalization_exception_listener');
+        }
+
+        if (!$config['handle_validation_failed_exception']) {
+            $container->removeDefinition('validation_failed_exception_listener');
+        }
+
         if ($propertyInfoEnabled) {
             $this->registerPropertyInfoConfiguration($container, $loader);
         }

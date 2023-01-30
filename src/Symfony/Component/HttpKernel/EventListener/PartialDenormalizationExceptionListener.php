@@ -25,11 +25,21 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  */
 final class PartialDenormalizationExceptionListener implements EventSubscriberInterface
 {
+    private const SUPPORTED_FORMATS = [
+        'xml',
+        'json',
+    ];
+
     public function onKernelException(ExceptionEvent $event): void
     {
         $throwable = $event->getThrowable();
 
         if (!$throwable instanceof PartialDenormalizationException) {
+            return;
+        }
+
+        $format = $event->getRequest()->getPreferredFormat('json');
+        if (!in_array($format, self::SUPPORTED_FORMATS, true)) {
             return;
         }
 

@@ -21,7 +21,7 @@ class MappedRequestAttributesTest extends AbstractWebTestCase
 {
     public function testMapQueryString()
     {
-        //todo: add data provider, test validation?
+        //todo: add data provider, test validation, test xml response
         $client = self::createClient(['test_case' => 'MappedRequestAttributes']);
 
         $client->request('GET', '/map-query-string', ['filter' => ['status' => 'approved', 'quantity' => '4']]);
@@ -34,6 +34,7 @@ class MappedRequestAttributesTest extends AbstractWebTestCase
      */
     public function testMapRequestContent(string $content, string $expectedResponse, int $expectedStatusCode)
     {
+        //todo: add test case for xml
         $client = self::createClient(['test_case' => 'MappedRequestAttributes']);
 
         $client->request(
@@ -41,7 +42,7 @@ class MappedRequestAttributesTest extends AbstractWebTestCase
             '/map-request-content',
             [],
             [],
-            [],
+            ['HTTP_ACCEPT' => 'application/json'],
             $content
         );
 
