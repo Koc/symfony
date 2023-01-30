@@ -29,7 +29,7 @@ final class MapQueryStringValueResolver implements ArgumentValueResolverInterfac
     private const CONTEXT = [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true];
 
     public function __construct(
-        private readonly DenormalizerInterface $normalizer,
+        private readonly ?DenormalizerInterface $normalizer,
         private readonly ?ValidatorInterface $validator,
     ) {
     }
@@ -60,7 +60,7 @@ final class MapQueryStringValueResolver implements ArgumentValueResolverInterfac
             throw new \LogicException(sprintf('Could not resolve the "$%s" controller argument: argument should be typed.', $argument->getName()));
         }
 
-        $payload = $this->normalizer->denormalize(
+        $payload = $this->getNormalizer()->denormalize(
             $request->query->all(),
             $type,
             'json',
@@ -76,5 +76,15 @@ final class MapQueryStringValueResolver implements ArgumentValueResolverInterfac
         }
 
         return [$payload];
+    }
+
+    private function getNormalizer(): DenormalizerInterface
+    {
+        if (!class_exists(DenormalizerInterface::class)) {
+            throw new \LogicException(sprintf('The "symfony/serializer" component is required to use the "%s" validator. Try running "composer require symfony/serializer".',
+                __CLASS__));
+        }
+
+        return $this->normalizer;
     }
 }

@@ -65,14 +65,14 @@ return static function (ContainerConfigurator $container) {
 
         ->set('argument_resolver.query_string', MapQueryStringValueResolver::class)
             ->args([
-                service('serializer'),
+                service('serializer')->nullOnInvalid(),
                 service('validator')->nullOnInvalid(),
             ])
             ->tag('controller.argument_value_resolver', ['priority' => 100])
 
         ->set('argument_resolver.request_content', MapRequestContentValueResolver::class)
             ->args([
-                service('serializer'),
+                service('serializer')->nullOnInvalid(),
                 service('validator')->nullOnInvalid(),
             ])
             ->tag('controller.argument_value_resolver', ['priority' => 100])
