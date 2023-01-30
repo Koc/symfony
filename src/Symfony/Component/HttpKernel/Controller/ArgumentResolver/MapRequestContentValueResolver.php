@@ -31,7 +31,7 @@ final class MapRequestContentValueResolver implements ArgumentValueResolverInter
     ];
 
     public function __construct(
-        private readonly SerializerInterface $serializer,
+        private readonly ?SerializerInterface $serializer,
         private readonly ?ValidatorInterface $validator,
     ) {
     }
@@ -62,7 +62,7 @@ final class MapRequestContentValueResolver implements ArgumentValueResolverInter
             throw new \LogicException(sprintf('Could not resolve the "$%s" controller argument: argument should be typed.', $argument->getName()));
         }
 
-        $payload = $this->serializer->deserialize(
+        $payload = $this->getSerializer->deserialize(
             $request->getContent(),
             $type,
             $attribute->format,
@@ -78,5 +78,15 @@ final class MapRequestContentValueResolver implements ArgumentValueResolverInter
         }
 
         return [$payload];
+    }
+
+    private function getSerializer(): SerializerInterface
+    {
+        if (!class_exists(SerializerInterface::class)) {
+            throw new \LogicException(sprintf('The "symfony/serializer" component is required to use the "%s" validator. Try running "composer require symfony/serializer".',
+                __CLASS__));
+        }
+
+        return $this->serializer;
     }
 }
