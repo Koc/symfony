@@ -30,6 +30,7 @@ use Symfony\Component\HttpKernel\EventListener\CacheAttributeListener;
 use Symfony\Component\HttpKernel\EventListener\DisallowRobotsIndexingListener;
 use Symfony\Component\HttpKernel\EventListener\ErrorListener;
 use Symfony\Component\HttpKernel\EventListener\LocaleListener;
+use Symfony\Component\HttpKernel\EventListener\PartialDenormalizationExceptionListener;
 use Symfony\Component\HttpKernel\EventListener\ResponseListener;
 use Symfony\Component\HttpKernel\EventListener\ValidateRequestListener;
 use Symfony\Component\HttpKernel\EventListener\ValidationFailedExceptionListener;
@@ -138,6 +139,9 @@ return static function (ContainerConfigurator $container) {
             ])
             ->tag('kernel.event_subscriber')
             ->tag('monolog.logger', ['channel' => 'request'])
+
+        ->set('partial_denormalization_exception_listener', PartialDenormalizationExceptionListener::class)
+            ->tag('kernel.event_subscriber')
 
         ->set('validation_failed_exception_listener', ValidationFailedExceptionListener::class)
             ->args([

@@ -24,7 +24,7 @@ class MappedRequestAttributesTest extends AbstractWebTestCase
         //todo: add data provider, test validation?
         $client = self::createClient(['test_case' => 'MappedRequestAttributes']);
 
-        $client->request('GET', '/map-query-string', ['filter' => ['status' => 'approved', 'quantity' => 4]]);
+        $client->request('GET', '/map-query-string', ['filter' => ['status' => 'approved', 'quantity' => '4']]);
 
         self::assertSame('filter.status=approved,filter.quantity=4', $client->getResponse()->getContent());
     }
@@ -54,21 +54,49 @@ class MappedRequestAttributesTest extends AbstractWebTestCase
         yield 'valid json' => [
             'content' => <<<'JSON'
 {
-    "comment": "Hello everyone!"
+    "comment": "Hello everyone!",
+    "approved": false
 }
 JSON,
             'expectedResponse' => <<<'JSON'
 {
-    "comment": "Hello everyone!"
+    "comment": "Hello everyone!",
+    "approved": false
 }
 JSON,
             'expectedStatusCode' => 200,
         ];
 
-        yield 'invalid json' => [
+        yield 'missing property' => [
             'content' => <<<'JSON'
 {
-    "comment": ""
+    "comment": "Hello everyone!"
+}
+JSON,
+            'expectedResponse' => <<<'JSON'
+{
+    "type": "https:\/\/symfony.com\/errors\/validation",
+    "title": "Validation Failed",
+    "detail": "The type must be one of \"unknown\" (\"array\" given).",
+    "violations": [
+        {
+            "propertyPath": "",
+            "title": "The type must be one of \"unknown\" (\"array\" given).",
+            "parameters": {
+                "hint": "Failed to create object because the class misses the \"approved\" property."
+            }
+        }
+    ]
+}
+JSON,
+            'expectedStatusCode' => 400,
+        ];
+
+        yield 'validation error' => [
+            'content' => <<<'JSON'
+{
+    "comment": "",
+    "approved": true
 }
 JSON,
             'expectedResponse' => <<<'JSON'
@@ -114,7 +142,7 @@ class WithMapRequestContentController
 {
     public function __invoke(#[MapRequestContent] RequestContent $content): Response
     {
-        return new JsonResponse(['comment' => $content->comment]);
+        return new JsonResponse(['comment' => $content->comment, 'approved' => $content->approved]);
     }
 }
 
@@ -138,7 +166,8 @@ class RequestContent
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Length(min: 10)]
-        public readonly string $comment
+        public readonly string $comment,
+        public readonly bool $approved,
     ) {
     }
 }

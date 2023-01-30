@@ -21,11 +21,11 @@ class ValidationFailedException extends RuntimeException
     private ConstraintViolationListInterface $violations;
     private mixed $value;
 
-    public function __construct(mixed $value, ConstraintViolationListInterface $violations)
+    public function __construct(mixed $value, ConstraintViolationListInterface $violations, ?\Throwable $previous = null)
     {
         $this->violations = $violations;
         $this->value = $value;
-        parent::__construct($violations);
+        parent::__construct($violations, 0, $previous);
     }
 
     public function getValue()

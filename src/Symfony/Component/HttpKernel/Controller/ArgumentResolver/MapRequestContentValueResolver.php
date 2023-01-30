@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestContent;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -25,6 +26,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 final class MapRequestContentValueResolver implements ArgumentValueResolverInterface, ValueResolverInterface
 {
+    private const CONTEXT = [
+        DenormalizerInterface::COLLECT_DENORMALIZATION_ERRORS => true,
+    ];
+
     public function __construct(
         private readonly SerializerInterface $serializer,
         private readonly ?ValidatorInterface $validator,
@@ -61,7 +66,7 @@ final class MapRequestContentValueResolver implements ArgumentValueResolverInter
             $request->getContent(),
             $type,
             $attribute->format,
-            $attribute->context
+            $attribute->context + self::CONTEXT,
         );
 
         if ($this->validator) {

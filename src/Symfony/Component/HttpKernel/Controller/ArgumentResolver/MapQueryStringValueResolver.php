@@ -26,7 +26,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 final class MapQueryStringValueResolver implements ArgumentValueResolverInterface, ValueResolverInterface
 {
-    private const CONTEXT = [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true];
+    private const CONTEXT = [
+        AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+        DenormalizerInterface::COLLECT_DENORMALIZATION_ERRORS => true,
+    ];
 
     public function __construct(
         private readonly DenormalizerInterface $normalizer,
@@ -64,7 +67,7 @@ final class MapQueryStringValueResolver implements ArgumentValueResolverInterfac
             $request->query->all(),
             $type,
             'json',
-            $attribute->context + self::CONTEXT
+            $attribute->context + self::CONTEXT,
         );
 
         if ($this->validator) {
