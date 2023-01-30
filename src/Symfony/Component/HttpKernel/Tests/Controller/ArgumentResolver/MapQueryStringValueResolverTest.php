@@ -99,7 +99,7 @@ class MapQueryStringValueResolverTest extends TestCase
 
         $resolver = new MapQueryStringValueResolver($serializer, $validator);
 
-        $argument = new ArgumentMetadata('invalid', \stdClass::class, false, false, null, false, [
+        $argument = new ArgumentMetadata('valid', \stdClass::class, false, false, null, false, [
             MapQueryString::class => new MapQueryString(),
         ]);
         $request = Request::create('/');

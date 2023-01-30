@@ -99,7 +99,7 @@ class MapRequestContentValueResolverTest extends TestCase
 
         $resolver = new MapRequestContentValueResolver($serializer, $validator);
 
-        $argument = new ArgumentMetadata('invalid', \stdClass::class, false, false, null, false, [
+        $argument = new ArgumentMetadata('valid', \stdClass::class, false, false, null, false, [
             MapRequestContent::class => new MapRequestContent(),
         ]);
         $request = Request::create('/');

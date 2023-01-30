@@ -25,28 +25,17 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  */
 final class PartialDenormalizationExceptionListener implements EventSubscriberInterface
 {
-    private const SUPPORTED_FORMATS = [
-        'xml',
-        'json',
-    ];
-
     public function onKernelException(ExceptionEvent $event): void
     {
         $throwable = $event->getThrowable();
-
         if (!$throwable instanceof PartialDenormalizationException) {
-            return;
-        }
-
-        $format = $event->getRequest()->getPreferredFormat('json');
-        if (!in_array($format, self::SUPPORTED_FORMATS, true)) {
             return;
         }
 
         $violations = new ConstraintViolationList();
         /** @var NotNormalizableValueException $exception */
         foreach ($throwable->getErrors() as $exception) {
-            //fixme: how to translate this messages?
+            // fixme: how to translate this messages?
             $message = sprintf(
                 'The type must be one of "%s" ("%s" given).',
                 implode(', ', $exception->getExpectedTypes()),

@@ -40,7 +40,7 @@ final class ValidationFailedExceptionListener implements EventSubscriberInterfac
         }
 
         $format = $event->getRequest()->getPreferredFormat('json');
-        if (!in_array($format, self::SUPPORTED_FORMATS, true)) {
+        if (!\in_array($format, self::SUPPORTED_FORMATS, true)) {
             return;
         }
 

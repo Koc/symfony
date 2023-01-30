@@ -2,6 +2,10 @@ map_query_string:
     path: /map-query-string
     controller: Symfony\Bundle\FrameworkBundle\Tests\Functional\WithMapQueryStringController
 
-map_request_content:
-    path: /map-request-content
-    controller: Symfony\Bundle\FrameworkBundle\Tests\Functional\WithMapRequestContentController
+map_request_content_from_json:
+    path: /map-request-content.json
+    controller: Symfony\Bundle\FrameworkBundle\Tests\Functional\WithMapRequestContentFromJsonController
+
+map_request_content_from_xml:
+    path: /map-request-content.xml
+    controller: Symfony\Bundle\FrameworkBundle\Tests\Functional\WithMapRequestContentFromXmlController
