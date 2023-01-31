@@ -12,26 +12,28 @@
 namespace Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\MapRequestContent;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
+use Symfony\Component\HttpKernel\Attribute\MapRequestInput;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @author Konstantin Myakshin <molodchick@gmail.com>
+ * @author Thomas Hanke <thomas@han.ke>
  */
-final class MapRequestContentValueResolver implements ArgumentValueResolverInterface, ValueResolverInterface
+final class MapRequestInputValueResolver implements ArgumentValueResolverInterface, ValueResolverInterface
 {
     private const CONTEXT = [
+        AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
         DenormalizerInterface::COLLECT_DENORMALIZATION_ERRORS => true,
     ];
 
     public function __construct(
-        private readonly ?SerializerInterface $serializer,
+        private readonly ?DenormalizerInterface $normalizer,
         private readonly ?ValidatorInterface $validator,
     ) {
     }
@@ -43,18 +45,18 @@ final class MapRequestContentValueResolver implements ArgumentValueResolverInter
     {
         @trigger_deprecation('symfony/http-kernel', '6.2', 'The "%s()" method is deprecated, use "resolve()" instead.', __METHOD__);
 
-        return 1 === \count($argument->getAttributesOfType(MapRequestContent::class));
+        return 1 === \count($argument->getAttributesOfType(MapRequestInput::class, ArgumentMetadata::IS_INSTANCEOF));
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        $attributes = $argument->getAttributesOfType(MapRequestContent::class);
+        $attributes = $argument->getAttributesOfType(MapRequestInput::class, ArgumentMetadata::IS_INSTANCEOF);
 
         if (!$attributes) {
             return [];
         }
 
-        /** @var MapRequestContent $attribute */
+        /** @var MapRequestInput $attribute */
         $attribute = $attributes[0];
 
         $type = $argument->getType();
@@ -62,10 +64,10 @@ final class MapRequestContentValueResolver implements ArgumentValueResolverInter
             throw new \LogicException(sprintf('Could not resolve the "$%s" controller argument: argument should be typed.', $argument->getName()));
         }
 
-        $payload = $this->getSerializer()->deserialize(
-            $request->getContent(),
+        $payload = $this->getNormalizer()->denormalize(
+            $request->request->all(),
             $type,
-            $attribute->format,
+            'json',
             $attribute->context + self::CONTEXT,
         );
 
@@ -80,13 +82,13 @@ final class MapRequestContentValueResolver implements ArgumentValueResolverInter
         return [$payload];
     }
 
-    private function getSerializer(): SerializerInterface
+    private function getNormalizer(): DenormalizerInterface
     {
-        if (!class_exists(SerializerInterface::class)) {
+        if (!class_exists(DenormalizerInterface::class)) {
             throw new \LogicException(sprintf('The "symfony/serializer" component is required to use the "%s" validator. Try running "composer require symfony/serializer".',
                 __CLASS__));
         }
 
-        return $this->serializer;
+        return $this->normalizer;
     }
 }

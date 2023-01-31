@@ -18,6 +18,7 @@ use Symfony\Component\HttpKernel\Controller\ArgumentResolver\DateTimeValueResolv
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\MapQueryStringValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\MapRequestContentValueResolver;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver\MapRequestInputValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\RequestAttributeValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\RequestValueResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver;
@@ -77,6 +78,13 @@ return static function (ContainerConfigurator $container) {
                 service('validator')->nullOnInvalid(),
             ])
             ->tag('controller.argument_value_resolver', ['priority' => 100])
+
+        ->set('argument_resolver.request_input', MapRequestInputValueResolver::class)
+        ->args([
+            service('serializer')->nullOnInvalid(),
+            service('validator')->nullOnInvalid(),
+        ])
+        ->tag('controller.argument_value_resolver', ['priority' => 100])
 
         ->set('argument_resolver.request_attribute', RequestAttributeValueResolver::class)
             ->tag('controller.argument_value_resolver', ['priority' => 100])
