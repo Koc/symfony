@@ -82,7 +82,7 @@ final class MapRequestContentValueResolver implements ArgumentValueResolverInter
 
     private function getSerializer(): SerializerInterface
     {
-        if (!class_exists(SerializerInterface::class)) {
+        if (!$this->serializer) {
             throw new \LogicException(sprintf('The "symfony/serializer" component is required to use the "%s" validator. Try running "composer require symfony/serializer".',
                 __CLASS__));
         }

@@ -84,7 +84,7 @@ final class MapRequestInputValueResolver implements ArgumentValueResolverInterfa
 
     private function getNormalizer(): DenormalizerInterface
     {
-        if (!class_exists(DenormalizerInterface::class)) {
+        if (!$this->normalizer) {
             throw new \LogicException(sprintf('The "symfony/serializer" component is required to use the "%s" validator. Try running "composer require symfony/serializer".',
                 __CLASS__));
         }
