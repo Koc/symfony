@@ -142,4 +142,18 @@ class ArgumentMetadata
 
         return $attributes;
     }
+
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $name
+     *
+     * @return T
+     */
+    public function findAttributesOfType(string $name): ?object
+    {
+        $attributes = $this->getAttributesOfType($name);
+
+        return $attributes ? $attributes[0] : null;
+    }
 }
