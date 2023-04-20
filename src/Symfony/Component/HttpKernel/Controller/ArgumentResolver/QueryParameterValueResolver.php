@@ -12,10 +12,14 @@
 namespace Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @author Ruud Kamphuis <ruud@ticketswap.com>
@@ -23,6 +27,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 final class QueryParameterValueResolver implements ValueResolverInterface
 {
+    public function __construct(private readonly ?ValidatorInterface $validator = null)
+    {
+    }
+
     public function resolve(Request $request, ArgumentMetadata $argument): array
     {
         if (!$attribute = $argument->getAttributesOfType(MapQueryParameter::class)[0] ?? null) {
@@ -79,6 +87,12 @@ final class QueryParameterValueResolver implements ValueResolverInterface
 
         if (null === $value && !($attribute->flags & \FILTER_NULL_ON_FAILURE)) {
             throw new NotFoundHttpException(sprintf('Invalid query parameter "%s".', $name));
+        }
+
+        if (\count($violations = $this->validator?->validate($value, $attribute->constraints) ?? [])) {
+            $e = new ValidationFailedException($value, $violations);
+
+            throw new HttpException(Response::HTTP_NOT_FOUND, implode("\n", array_map(static fn ($e) => $e->getMessage(), iterator_to_array($violations))), $e);
         }
 
         if (!\is_array($value)) {
